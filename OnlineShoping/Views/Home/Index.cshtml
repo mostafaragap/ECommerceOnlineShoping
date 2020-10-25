@@ -1,0 +1,90 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+    <link href="~/Content/MyMainLauOut.css" rel="stylesheet" />
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!------ Include the above in your HEAD tag ---------->
+
+<div id="themeSlider" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#themeSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#themeSlider" data-slide-to="1"></li>
+        <li data-target="#themeSlider" data-slide-to="2"></li>
+    </ol>
+
+    <div class="carousel-inner">
+        <div class="item active">
+            <div class="imgOverlay"></div>
+            <img style="height:320px ; width:100%" src="~/Images/1280x960.jpg" alt="First slide">
+            <div class="carousel-caption">
+                <h3>New</h3>
+              
+            </div>
+        </div>
+        <div class="item">
+            <div class="imgOverlay"></div>
+            <img  style="height:320px ; width:100%" src="~/Images/flash-drives-memory.jpg" alt="Second slide">
+            <div class="carousel-caption">
+                <h3>Phones</h3>
+               
+            </div>
+        </div>
+        <div class="item">
+            <div class="imgOverlay"></div>
+            <img style="height:320px ; width:100%" src="~/Images/Lithium-Ion-Batteries-AA-e1568244465343.jpg" alt="Third slide">
+            <div class="carousel-caption">
+                <h3>Latest</h3>
+               
+            </div>
+        </div>
+    </div>
+
+    <a class="left carousel-control" href="#themeSlider" data-slide="prev">
+        <span class="fa fa-chevron-left"></span>
+    </a>
+    <a class="right carousel-control" href="#themeSlider" data-slide="next">
+        <span class="fa fa-chevron-right"></span>
+    </a>
+
+    
+</div>
+<div class="olContent f1">
+    <h2 style="color:black">Search Product/Category </h2>
+     
+</div>
+<div class="olSearch fr" >
+    <input type="text" placeholder="Enter Keyword" name="searchKey" 
+           class="inputComn houseText form-control" />
+    <div class="searchIcon">
+        <button type="button" class="searchBtn">
+            <img style="height:30px; padding-bottom:10px" src="~/Images/search-very-basic-icon-ios-iconset-icons-7.png" />
+           
+        </button>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h2>Our Products<small> trends products</small></h2>
+        </div>
+
+    </div>
+</div>
+<div class="row product-container">
+    <div class="col-md-3 col-sm-3 col-xs-6" style="margin-bottom:8px;">
+        <div class="thumbnail product-item" style="height:300px;">
+            <img class="img-responsive" title="Click to view Product detail"
+                 style="cursor:pointer; height:160px; width:100%" src="~/Images/iPhone-12-2.jpg">
+            <div class="caption">
+                <h5> Product Name</h5>
+                <p>20000.00</p>
+                <p>Availale</p>
+                <div class="product-item-badge">
+                    New
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
