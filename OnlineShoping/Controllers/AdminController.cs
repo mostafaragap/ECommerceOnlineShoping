@@ -35,8 +35,16 @@ namespace OnlineShoping.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult UpdateProduct(Tbl_Product Product)
+        public ActionResult UpdateProduct(Tbl_Product Product , HttpPostedFileBase file)
         {
+            string pic = null;
+            if(file != null)
+            {
+                 pic = System.IO.Path.GetFileName(file.FileName);
+                string path = System.IO.Path.Combine(Server.MapPath("~/ProductImgs/"), pic);
+                file.SaveAs(path);
+            }
+            Product.ProductImage = pic;
                  Product.IsDelete = false;
                 Product.CreatedDate = DateTime.Now;
                 _DBEntity.Tbl_Product.Add(Product);
@@ -49,15 +57,31 @@ namespace OnlineShoping.Controllers
 
         public ActionResult ProductEdit(int Productid)
         {
+            ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName");
             return View( _unitOfWork.GetRepositoryInstance<Tbl_Product>().GetFirstorDefault(Productid));
           
         }
         [HttpPost]
-        public ActionResult ProductEdit(Tbl_Product Product)
+        public ActionResult ProductEdit(Tbl_Product Product, HttpPostedFileBase file)
         {
-        
+            string pic = null;
+            if (file != null)
+            {
+                pic = System.IO.Path.GetFileName(file.FileName);
+                string path = System.IO.Path.Combine(Server.MapPath("~/ProductImgs/"), pic);
+                file.SaveAs(path);
+                Product.ProductImage = pic;
+            }
+            else
+            {
+                Product.ProductImage = Product.ProductImage; 
+            }
+           
+   
+
             Product.ModifiedDate = DateTime.Now;
                 _unitOfWork.GetRepositoryInstance<Tbl_Product>().Update(Product);
+            ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName", Product.ProductId);
             return RedirectToAction("Product");
         }
 

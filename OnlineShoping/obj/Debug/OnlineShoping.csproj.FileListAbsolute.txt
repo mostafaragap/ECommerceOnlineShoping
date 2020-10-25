@@ -105,3 +105,7 @@ E:\VisualStudio\OnlineShoping\OnlineShoping\obj\Debug\OnlineShoping.csprojAssemb
 E:\VisualStudio\OnlineShoping\OnlineShoping\obj\Debug\OnlineShoping.csproj.CopyComplete
 E:\VisualStudio\OnlineShoping\OnlineShoping\obj\Debug\OnlineShoping.dll
 E:\VisualStudio\OnlineShoping\OnlineShoping\obj\Debug\OnlineShoping.pdb
+E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.dll
+E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.Mvc.dll
+E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.xml
+E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.Mvc.xml

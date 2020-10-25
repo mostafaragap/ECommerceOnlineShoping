@@ -9,15 +9,17 @@
 
 
 <div>
-    <h4>ProductDetail</h4>
+    <h4>Product</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <dl class="container">
+
+
         <dt>
-            @Html.DisplayNameFor(model => model.ProductId)
+            @Html.DisplayNameFor(model => model.ProductImage)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ProductId)
+            <img style="width:80px ; height:100px" src="~/ProductImgs/@Model.ProductImage" />
         </dd>
 
         <dt>
@@ -29,28 +31,14 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.CategoryId)
+            @Html.DisplayName("Category")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.CategoryId)
+            @Html.DisplayFor(model => model.Tbl_Category.CategoryName)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsActive)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.IsActive)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.IsDelete)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsDelete)
-        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.CreatedDate)
@@ -60,13 +48,7 @@
             @Html.DisplayFor(model => model.CreatedDate)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ModifiedDate)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.ModifiedDate)
-        </dd>
 
         <dt>
             @Html.DisplayNameFor(model => model.Description)
@@ -76,21 +58,9 @@
             @Html.DisplayFor(model => model.Description)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.ProductImage)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.ProductImage)
-        </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.IsFeatured)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.IsFeatured)
-        </dd>
+      
 
         <dt>
             @Html.DisplayNameFor(model => model.Quantity)
@@ -113,8 +83,8 @@
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
 
-<div class="form-actions no-color">
-    <input type="submit" value="Delete" class="btn btn-danger" /> |
+<div class="form-actions no-color container">
+    <input type="submit" value="Delete" class="btn btn-danger" /> 
     <a onclick="window.history.back();" class="btn btn-info" style="color:white">Cancel</a>
 </div>
     }
