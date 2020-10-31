@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace OnlineShoping.Models
 {
+
     public class CategoryDetail
     {
         public int CategoryId { get; set; }

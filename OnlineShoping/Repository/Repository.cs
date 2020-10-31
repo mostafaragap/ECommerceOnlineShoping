@@ -1,4 +1,5 @@
-﻿using OnlineShoping.Models;
+﻿using OnlineShoping.DAL;
+using OnlineShoping.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,8 @@ namespace OnlineShoping.Repository
     public interface IRepository<Tbl_Entity> where Tbl_Entity:class
     {
         IEnumerable<Tbl_Entity> GetProduct();
-       
+        bool GetInActiveAndDeleted();
+
         IEnumerable<Tbl_Entity> GetAllRecords();
         IQueryable<Tbl_Entity> GetAllRecordsIQueryable();
         int GetAllRecordCount();
@@ -28,5 +30,6 @@ namespace OnlineShoping.Repository
 
         IEnumerable<Tbl_Entity> GetRecordsToShow(int pageNo, int CurrentPage, Expression<Func<Tbl_Entity, bool>> wherePredict, Expression<Func<Tbl_Entity, int>> orderByPredict);
         
+
     }
 }

@@ -1,22 +1,32 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using OnlineShoping.DAL;
 using OnlineShoping.Models;
+using OnlineShoping.Repository;
 
 namespace OnlineShoping.Controllers
 {
-    [Authorize]
+   
     public class AccountController : Controller
     {
+        public GenericUnitofWork _unitOfWork = new GenericUnitofWork();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private dbMyOnlineShoppingEntities _DBEntity = new dbMyOnlineShoppingEntities();
+        private const int Keysize = 256;
+        private const int DerivationIterations = 1000;
 
         public AccountController()
         {
@@ -39,7 +49,39 @@ namespace OnlineShoping.Controllers
                 _signInManager = value; 
             }
         }
+        public string Encrypt(string str)
+        {
+            string EncrptKey = "2013;[pnuLIT)WebCodeExpert";
+            byte[] byKey = { };
+            byte[] IV = { 18, 52, 86, 120, 144, 171, 205, 239 };
+            byKey = System.Text.Encoding.UTF8.GetBytes(EncrptKey.Substring(0, 8));
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            byte[] inputByteArray = Encoding.UTF8.GetBytes(str);
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms, des.CreateEncryptor(byKey, IV), CryptoStreamMode.Write);
+            cs.Write(inputByteArray, 0, inputByteArray.Length);
+            cs.FlushFinalBlock();
+            return Convert.ToBase64String(ms.ToArray());
+        }
 
+        public string Decrypt(string str)
+        {
+            str = str.Replace(" ", "+");
+            string DecryptKey = "2013;[pnuLIT)WebCodeExpert";
+            byte[] byKey = { };
+            byte[] IV = { 18, 52, 86, 120, 144, 171, 205, 239 };
+            byte[] inputByteArray = new byte[str.Length];
+
+            byKey = System.Text.Encoding.UTF8.GetBytes(DecryptKey.Substring(0, 8));
+            DESCryptoServiceProvider des = new DESCryptoServiceProvider();
+            inputByteArray = Convert.FromBase64String(str.Replace(" ", "+"));
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms, des.CreateDecryptor(byKey, IV), CryptoStreamMode.Write);
+            cs.Write(inputByteArray, 0, inputByteArray.Length);
+            cs.FlushFinalBlock();
+            System.Text.Encoding encoding = System.Text.Encoding.UTF8;
+            return encoding.GetString(ms.ToArray());
+        }
         public ApplicationUserManager UserManager
         {
             get
@@ -55,9 +97,11 @@ namespace OnlineShoping.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login()
         {
-            ViewBag.ReturnUrl = returnUrl;
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetExpires(DateTime.Now);
+
             return View();
         }
 
@@ -66,31 +110,49 @@ namespace OnlineShoping.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public ActionResult Login(string email , string password)
         {
-            if (!ModelState.IsValid)
+            var newPasswordHashed = Encrypt(password);
+
+            Tbl_Members user =_unitOfWork.GetRepositoryInstance<Tbl_Members>().GetFirstOrDefaultByParameter(a=>a.EmailId==email && a.Password== newPasswordHashed);
+
+           
+            if(user!=null && user.UserType == 0)
             {
-                return View(model);
+                if(user.IsActive == true && user.IsDelete==false)
+                {
+                    FormsAuthentication.SetAuthCookie(user.FristName,true);
+                    Session["UserId"] = user.MemberId;
+                    Session["UserName"] = user.FristName;
+                    RedirectToAction("Index", "Home");
+                }
+                else if(user.IsActive == false)
+                {
+                    ViewBag.Active = "Sorry you are blocked , please contact the admin";
+                    return View(user);
+                }
+
+            }
+            else if (user != null && user.UserType == 1)
+            {
+                FormsAuthentication.SetAuthCookie(user.FristName, true);
+                Session["AdminId"] = user.MemberId;
+                Session["AdminName"] = user.FristName;
+                return RedirectToAction("Dashboard", "Admin");
+
+
+            }
+            else
+            {
+                ViewBag.Active = "Invalid Login attempt";
+                return View(user);
             }
 
-            // This doesn't count login failures towards account lockout
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch (result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
-                case SignInStatus.LockedOut:
-                    return View("Lockout");
-                case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
+            return RedirectToAction("Index", "Home");
+
         }
 
+        
         //
         // GET: /Account/VerifyCode
         [AllowAnonymous]
@@ -139,6 +201,8 @@ namespace OnlineShoping.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetExpires(DateTime.Now);
             return View();
         }
 
@@ -147,29 +211,30 @@ namespace OnlineShoping.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public ActionResult Register(RegisterViewModel model , string confirmPaswword)
         {
-            if (ModelState.IsValid)
+
+
+            if (model.Password == confirmPaswword)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
-                }
-                AddErrors(result);
+                var user = new Tbl_Members { FristName = model.FristName, LastName = model.LastName, EmailId = model.EmailId, CreatedOn = DateTime.Now, IsActive = true, IsDelete = false };
+                var newPasswordHashed = Encrypt(model.Password);
+                user.Password = newPasswordHashed;
+                _unitOfWork.GetRepositoryInstance<Tbl_Members>().Add(user);
+                Session["UserId"] = model.MemberId;
+                Session["UserName"] = model.FristName;
+                return RedirectToAction("Index", "Home");
+
             }
+            else
+            {
+                ViewBag.Message = "Two Passwords doesn't match";
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+                  return View(model);
+            }
+        
+
         }
 
         //
@@ -384,16 +449,9 @@ namespace OnlineShoping.Controllers
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
         }
-
-        //
+        
         // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
-        {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
-        }
+       
 
         //
         // GET: /Account/ExternalLoginFailure
@@ -479,6 +537,121 @@ namespace OnlineShoping.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+        }
+
+
+        public ActionResult EditProfile()
+        {
+            if(Session["UserId"]!= null)
+            {
+                int UserId = (int)Session["UserId"];
+                var user = _DBEntity.Tbl_Members.Where(a => a.MemberId == UserId).SingleOrDefault();
+                Tbl_Members profile = new Tbl_Members();
+
+                profile.FristName = user.FristName;
+                profile.LastName = user.LastName;
+                profile.EmailId = user.EmailId;
+                return View(profile);
+            }
+            else if(Session["AdminId"] != null)
+            {
+                int UserId = (int)Session["AdminId"];
+                var user = _DBEntity.Tbl_Members.Where(a => a.MemberId == UserId).SingleOrDefault();
+                Tbl_Members profile = new Tbl_Members();
+
+                profile.FristName = user.FristName;
+                profile.LastName = user.LastName;
+                profile.EmailId = user.EmailId;
+                return View(profile);
+            }
+            return View();
+               
+          
+
+            
+        }
+
+        [HttpPost]
+        public ActionResult EditProfile(Tbl_Members profile , string CurrPassword , string NewPaswword , string ConfirmPassword )
+        {
+            if(Session["UserId"]!= null)
+            {
+                int UserId = (int)Session["UserId"];
+
+                var CurrentUser = _DBEntity.Tbl_Members.Where(a => a.MemberId == UserId).SingleOrDefault();
+                string OldPass = Decrypt(CurrentUser.Password);
+
+                if (NewPaswword != ConfirmPassword)
+                {
+                    ViewBag.MessageEdit = "Two Passwords are not match";
+                }
+
+                else if (CurrPassword != OldPass)
+                {
+
+                    ViewBag.MessageEdit = "The old password is invalid";
+
+
+                }
+
+                else
+                {
+                    string NewPass = Encrypt(NewPaswword);
+
+                    CurrentUser.FristName = profile.FristName;
+                    CurrentUser.LastName = profile.LastName;
+                    CurrentUser.EmailId = profile.EmailId;
+                    CurrentUser.Password = NewPass;
+                    CurrentUser.ModifiedOn = DateTime.Now;
+                    CurrentUser.IsDelete = false;
+                    CurrentUser.IsActive = true;
+                    _DBEntity.Entry(CurrentUser).State = System.Data.Entity.EntityState.Modified;
+                    _DBEntity.SaveChanges();
+                    ViewBag.MessageEdit = "Account has modified succesfully";
+                }
+
+                return View(profile);
+            }else if(Session["AdminId"] != null)
+            {
+
+                int UserId = (int)Session["AdminId"];
+
+                var CurrentUser = _DBEntity.Tbl_Members.Where(a => a.MemberId == UserId).SingleOrDefault();
+                string OldPass = Decrypt(CurrentUser.Password);
+
+                if (NewPaswword != ConfirmPassword)
+                {
+                    ViewBag.MessageEdit = "Two Passwords are not match";
+                }
+
+                else if (CurrPassword != OldPass)
+                {
+
+                    ViewBag.MessageEdit = "The old password is invalid";
+
+
+                }
+
+                else
+                {
+                    string NewPass = Encrypt(NewPaswword);
+
+                    CurrentUser.FristName = profile.FristName;
+                    CurrentUser.LastName = profile.LastName;
+                    CurrentUser.EmailId = profile.EmailId;
+                    CurrentUser.Password = NewPass;
+                    CurrentUser.ModifiedOn = DateTime.Now;
+                    CurrentUser.IsDelete = false;
+                    CurrentUser.IsActive = true;
+                    _DBEntity.Entry(CurrentUser).State = System.Data.Entity.EntityState.Modified;
+                    _DBEntity.SaveChanges();
+                    ViewBag.MessageEdit = "Account has modified succesfully";
+                }
+
+                return View(profile);
+            }
+
+            return View(profile);
         }
         #endregion
     }

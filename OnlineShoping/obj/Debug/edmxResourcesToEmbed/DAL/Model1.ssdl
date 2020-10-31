@@ -7,14 +7,9 @@
     <Property Name="CartId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ProductId" Type="int" />
     <Property Name="MemberId" Type="int" />
-    <Property Name="CartStatusId" Type="int" />
-  </EntityType>
-  <EntityType Name="Tbl_CartStatus">
-    <Key>
-      <PropertyRef Name="CartStatusId" />
-    </Key>
-    <Property Name="CartStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="CartStatus" Type="varchar" MaxLength="500" />
+    <Property Name="Quantity" Type="int" />
+    <Property Name="OrderStatues" Type="bit" />
+    <Property Name="Confirmed" Type="bit" />
   </EntityType>
   <EntityType Name="Tbl_Category">
     <Key>
@@ -46,6 +41,7 @@
     <Property Name="IsDelete" Type="bit" />
     <Property Name="CreatedOn" Type="datetime" />
     <Property Name="ModifiedOn" Type="datetime" />
+    <Property Name="UserType" Type="int" />
   </EntityType>
   <EntityType Name="Tbl_Product">
     <Key>
@@ -132,7 +128,6 @@
   </Association>
   <EntityContainer Name="dbMyOnlineShoppingModelStoreContainer">
     <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" Schema="dbo" store:Type="Tables" />
-    <EntitySet Name="Tbl_CartStatus" EntityType="Self.Tbl_CartStatus" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Members" EntityType="Self.Tbl_Members" Schema="dbo" store:Type="Tables" />

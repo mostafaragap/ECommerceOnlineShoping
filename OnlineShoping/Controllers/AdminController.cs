@@ -19,76 +19,107 @@ namespace OnlineShoping.Controllers
         // GET: Admin
         public ActionResult Dashboard()
         {
-            return View();
+            if (Session["AdminId"] != null)
+            {
+                return View();
+            }
+            else
+           return     RedirectToAction("Login", "Account");
+            
         }
 
         public ActionResult Product()
         {
-            List<Tbl_Product> AllProducts = _unitOfWork.GetRepositoryInstance<Tbl_Product>().GetAllRecordsIQueryable().Where(i => i.IsDelete == false).ToList();
-            return View(AllProducts);
+            if (Session["AdminId"] != null)
+            {
+                List<Tbl_Product> AllProducts = _unitOfWork.GetRepositoryInstance<Tbl_Product>().GetAllRecordsIQueryable().Where(i => i.IsDelete == false).ToList();
+                return View(AllProducts);
+            }
+            else
+                return RedirectToAction("Login", "Account");
         }
         [HttpGet]
         public ActionResult UpdateProduct()
         {
-         
-            ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName");
-            return View();
+            if (Session["AdminId"] != null)
+            {
+
+                ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName");
+                return View();
+            }else
+                return RedirectToAction("Login", "Account");
+
         }
         [HttpPost]
         public ActionResult UpdateProduct(Tbl_Product Product , HttpPostedFileBase file)
         {
-            string pic = null;
-            if(file != null)
+            if (Session["AdminId"] != null)
             {
-                 pic = System.IO.Path.GetFileName(file.FileName);
-                string path = System.IO.Path.Combine(Server.MapPath("~/ProductImgs/"), pic);
-                file.SaveAs(path);
-            }
-            Product.ProductImage = pic;
-                 Product.IsDelete = false;
+                string pic = null;
+                if (file != null)
+                {
+                    pic = System.IO.Path.GetFileName(file.FileName);
+                    string path = System.IO.Path.Combine(Server.MapPath("~/ProductImgs/"), pic);
+                    file.SaveAs(path);
+                }
+                Product.ProductImage = pic;
+                Product.IsDelete = false;
                 Product.CreatedDate = DateTime.Now;
                 _DBEntity.Tbl_Product.Add(Product);
                 _DBEntity.SaveChanges();
-                
-       
+
+
                 ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName", Product.ProductId);
-            return RedirectToAction("Product");
+                return RedirectToAction("Product");
+            }else
+                return RedirectToAction("Login", "Account");
+
         }
 
         public ActionResult ProductEdit(int Productid)
         {
+            if (Session["AdminId"] != null) { 
             ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName");
-            return View( _unitOfWork.GetRepositoryInstance<Tbl_Product>().GetFirstorDefault(Productid));
-          
-        }
+            return View(_unitOfWork.GetRepositoryInstance<Tbl_Product>().GetFirstorDefault(Productid));
+        }else
+                return RedirectToAction("Login", "Account");
+    }
         [HttpPost]
         public ActionResult ProductEdit(Tbl_Product Product, HttpPostedFileBase file)
         {
-            string pic = null;
-            if (file != null)
+            if (Session["AdminId"] != null)
             {
-                pic = System.IO.Path.GetFileName(file.FileName);
-                string path = System.IO.Path.Combine(Server.MapPath("~/ProductImgs/"), pic);
-                file.SaveAs(path);
-                Product.ProductImage = pic;
-            }
-            else
-            {
-                Product.ProductImage = Product.ProductImage; 
-            }
-           
-   
+                string pic = null;
+                if (file != null)
+                {
+                    pic = System.IO.Path.GetFileName(file.FileName);
+                    string path = System.IO.Path.Combine(Server.MapPath("~/ProductImgs/"), pic);
+                    file.SaveAs(path);
+                    Product.ProductImage = pic;
+                }
+                else
+                {
+                    Product.ProductImage = Product.ProductImage;
+                }
 
-            Product.ModifiedDate = DateTime.Now;
+                Product.ModifiedDate = DateTime.Now;
                 _unitOfWork.GetRepositoryInstance<Tbl_Product>().Update(Product);
-            ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName", Product.ProductId);
-            return RedirectToAction("Product");
+                ViewBag.CategoryId = new SelectList(_DBEntity.Tbl_Category, "CategoryId", "CategoryName", Product.ProductId);
+                return RedirectToAction("Product");
+            }else
+                return RedirectToAction("Login", "Account");
+
         }
 
         public ActionResult DeleteProduct(int Productid)
         {
-            return View(_unitOfWork.GetRepositoryInstance<Tbl_Product>().GetFirstorDefault(Productid));
-            
+
+            if (Session["AdminId"] != null)
+            {
+                return View(_unitOfWork.GetRepositoryInstance<Tbl_Product>().GetFirstorDefault(Productid));
+            }else
+                return RedirectToAction("Login", "Account");
+
         }
 
         [HttpPost, ActionName("DeleteProduct")]
@@ -102,8 +133,13 @@ namespace OnlineShoping.Controllers
 
         public ActionResult Categories()
         {
-            List<Tbl_Category> AllCategories = _unitOfWork.GetRepositoryInstance<Tbl_Category>().GetAllRecordsIQueryable().Where(i => i.IsDelete == false).ToList();
-            return View(AllCategories);        
+            if (Session["AdminId"] != null)
+            {
+                List<Tbl_Category> AllCategories = _unitOfWork.GetRepositoryInstance<Tbl_Category>().GetAllRecordsIQueryable().Where(i => i.IsDelete == false).ToList();
+                return View(AllCategories);
+            }else
+                return RedirectToAction("Login", "Account");
+
         }
         //public ActionResult AddCategory()
         //{
@@ -125,34 +161,45 @@ namespace OnlineShoping.Controllers
         //}
         public ActionResult UpdateCategory()
         {
-            return View();
+            if (Session["AdminId"] != null)
+            {
+                return View();
+            }
+            else
+                return RedirectToAction("Login", "Account");
+
 
         }
 
         [HttpPost]
         public ActionResult UpdateCategory(Tbl_Category category)
         {
-            category.IsActive = true;
-            category.IsDelete = false;
-            
-            var name = _DBEntity.Tbl_Category.Where(a => a.CategoryName == category.CategoryName).ToList();
-
-            if(name.Count() >= 1 )
+            if (Session["AdminId"] != null)
             {
-                ViewBag.Message = " sorry , this Category is allready taken";
-                return View();
+                category.IsActive = true;
+                category.IsDelete = false;
 
-               
-            }
-            else
-            {
-                _DBEntity.Tbl_Category.Add(category);
-                _DBEntity.SaveChanges();
-                return RedirectToAction("Categories");
-            }
-           
+                var name = _DBEntity.Tbl_Category.Where(a => a.CategoryName == category.CategoryName).ToList();
+
+                if (name.Count() >= 1)
+                {
+                    ViewBag.Message = " sorry , this Category is allready taken";
+                    return View();
+
+
+                }
+                else
+                {
+                    _DBEntity.Tbl_Category.Add(category);
+                    _DBEntity.SaveChanges();
+                    return RedirectToAction("Categories");
+                }
+            }else
+                return RedirectToAction("Login", "Account");
+
+
             //_unitOfWork.GetRepositoryInstance<Tbl_Category>().Add(category);
-          
+
         }
 
         public ActionResult CategoryEdit(int categoryid)
@@ -164,9 +211,14 @@ namespace OnlineShoping.Controllers
         [HttpPost]
         public ActionResult CategoryEdit(Tbl_Category category)
         {
+            if (Session["AdminId"] != null)
+            {
 
-            _unitOfWork.GetRepositoryInstance<Tbl_Category>().Update(category);
-            return RedirectToAction("Categories");
+                _unitOfWork.GetRepositoryInstance<Tbl_Category>().Update(category);
+                return RedirectToAction("Categories");
+            }else
+                return RedirectToAction("Login", "Account");
+
         }
 
     

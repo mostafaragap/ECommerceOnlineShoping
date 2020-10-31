@@ -1,0 +1,64 @@
+﻿
+@using OnlineShoping.DAL
+
+@if (Session["AdminId"] != null || Session["AdminName"] != null)
+{
+    var _DBEntity = new dbMyOnlineShoppingEntities();
+    int UserId = (int)Session["AdminId"];
+    var Curr_User = _DBEntity.Tbl_Members.Where(a => a.MemberId == UserId).SingleOrDefault();
+
+    @Html.AntiForgeryToken()
+
+    <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+
+                <span class="glyphicon glyphicon-user"></span>
+                <strong>welcome: @Curr_User.FristName</strong>
+                <span class="glyphicon glyphicon-chevron-down"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li>
+                    <div class="navbar-user">
+                        <div class="row">
+
+                            <div class="col-lg-8 center-block">
+                    
+                                <a style="position:relative;top:50% ; left:50%" href="~/Account/EditProfile">Edit Profile</a>
+
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="divider">
+                </li>
+                <li>
+                    <div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <p>
+
+
+                                    @using (Html.BeginForm("LogoutAdmin", "Home", FormMethod.Post))
+                                    {
+                                        <a style="position:relative;top:50% ;" class="btn btn-danger btn-block" href="javascript:;" onclick="document.forms[0].submit();">Logout</a>
+                                    }
+
+
+
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                </li>
+            </ul>
+
+        </li>
+
+       
+    </ul>
+
+}
+

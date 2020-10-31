@@ -29,6 +29,7 @@ namespace OnlineShoping.DAL
         public Nullable<bool> IsDelete { get; set; }
         public Nullable<System.DateTime> CreatedOn { get; set; }
         public Nullable<System.DateTime> ModifiedOn { get; set; }
+        public Nullable<int> UserType { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Tbl_ShippingDetails> Tbl_ShippingDetails { get; set; }

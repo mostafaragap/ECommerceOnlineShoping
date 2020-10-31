@@ -1,4 +1,5 @@
-﻿
+﻿@using OnlineShoping.DAL
+
 @using OnlineShoping.Models
 <!DOCTYPE html>
 <html>
@@ -8,13 +9,13 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @*@Styles.Render("~/Content/css")*@
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
     <link href="~/Content/MyMainLauOut.css" rel="stylesheet" />
     @Scripts.Render("~/bundles/modernizr")
 
 </head>
 <body>
-    
+
     <div class="container">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6">
@@ -27,56 +28,94 @@
 
             <div class="col-md-6 col-sm-6 col-xs-6">
                 @*<div class="account">
-                    <ul>
-                        <li>
-                            <div class="hidden-xs">
-                                <h4>
-                                    <a>Call</a>
-                                </h4>
-                                    <p>01158688277</p>
-                               
-                            </div>
-                            <div class="visible-xs">
-                                <h4>
-                                   
-                                    <p>01158688277</p>
-                                </h4>
-                            </div>
-                        </li>
-                    </ul>
-                </div>*@
-                <ul class="nav navbar-nav navbar-right">
+            <ul>
+                <li>
+                    <div class="hidden-xs">
+                        <h4>
+                            <a>Call</a>
+                        </h4>
+                            <p>01158688277</p>
 
-                    <li class="dropdown">
-                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" >Cart(3) <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            @if(Session["cart"] != null)
-                                {
-                                 foreach (var item in (List<item>)Session["cart"])
-                            {
-                                <li> <a href="@Url.Action("RemoveFromCart" , "Home" , new {productId = item.Product.ProductId })">@item.Product.ProductName (@item.Quantity) <i class="fa fa-times pull-right"></i></a></li>
-                            }
+                    </div>
+                    <div class="visible-xs">
+                        <h4>
 
-                            }
-                           
+                            <p>01158688277</p>
+                        </h4>
+                    </div>
+                </li>
+            </ul>
 
-                          
-                            <li class="divider"> </li>
-                            <li><a href="#"></a>IT</li>
+        </div>*@
+                @{
+                    if (Session["UserId"] != null)
+                    {
+
+                        <ul class="nav navbar-nav navbar-right">
+
+                            <li class="dropdown">
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">Cart(3) <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    @{
+                                        dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
+                                        var id = (int)Session["UserId"];
+                                        var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues==false).ToList();
+                                        if (carts != null)
+                                        {
+                                            foreach (var item in carts)
+                                            {
+
+                                                <li> <a href="@Url.Action("RemoveFromCart" , "Home" , new {productId = item.Tbl_Product.ProductId })">@item.Tbl_Product.ProductName (@item.Quantity) <i class="fa fa-times pull-right"></i></a></li>
+                                            }
+
+                                        }
 
 
+
+                                    }
+
+
+                                    <li class="divider"> </li>
+                                    <li><a href="@Url.Action("Checkout","Home")">Checkout</a></li>
+
+
+                                </ul>
+                            </li>
                         </ul>
-                    </li>
+
+                    }
+                }
+
+                @*<ul class="nav navbar-nav navbar-right">
+
+            <li class="dropdown">
+                <a data-toggle="dropdown" class="dropdown-toggle" href="#" >Cart(3) <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    @if (Session["cart"] != null)
+                    {
+                        foreach (var item in (List<item>)Session["cart"])
+                        {
+                            <li> <a href="@Url.Action("RemoveFromCart" , "Home" , new {productId = item.Product.ProductId })">@item.Product.ProductName (@item.Quantity) <i class="fa fa-times pull-right"></i></a></li>
+                        }
+
+                    }
+                    <li class="divider"> </li>
+                    <li><a href="@Url.Action("Checkout","Home")">Checkout</a></li>
+
+
                 </ul>
+            </li>
+        </ul>*@
 
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="nav-menus">
                         <ul class="nav nav-pills">
-                            <li class="active"> <a style="border-radius:initial;" href="#"> Home</a></li>
+                            <li class="active"> <a style="border-radius:initial;" href="@Url.Action("Index","Home")"> Home</a></li>
                             <li> <a style="border-radius:initial;" href="#"> Location</a></li>
                             <li> <a style="border-radius:initial;" href="#"> About</a></li>
+                            @Html.Partial("_LoginInfo", new { @class = "pull-right" })
                         </ul>
                     </div>
                 </div>
@@ -91,16 +130,16 @@
                         <p>&copy; @DateTime.Now.Year - Online Shoping. All Rights Reserved</p>
                     </div>
                     <div class="col-md-6 col-sm-6 copyright-right">
-                      <ul class="list-unstyled list-social">
-                          <li><a href="#" target="_blank"><i class="fa fa-facebook-square" ></i></a></li> 
-                          <li><a href="#" target="_blank"><i class="fa fa-twitter" ></i></a></li>
-                          <li><a href="#" target="_blank"><i class="fa fa-google-plus" ></i></a></li>
+                        <ul class="list-unstyled list-social">
+                            <li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+                            <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="#" target="_blank"><i class="fa fa-google-plus"></i></a></li>
 
-                      </ul>
+                        </ul>
                     </div>
                 </div>
             </div>
-          
+
         </footer>
     </div>
 

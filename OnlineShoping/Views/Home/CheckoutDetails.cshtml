@@ -1,0 +1,67 @@
+﻿@model IEnumerable<OnlineShoping.DAL.Tbl_Cart>
+
+@{
+    ViewBag.Title = "CheckoutDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>CheckoutDetails</h2>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total Net</th>
+
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @{
+            int Totals = 0;
+            List<object> cartList = new List<object>();
+
+
+
+        }
+        @foreach (var item in Model)
+        {
+            cartList.Add(item);
+            int Total = Convert.ToInt32(item.Quantity * item.Tbl_Product.Price);
+            Totals = @Totals + Total;
+            <tr>
+                <td>@item.Tbl_Product.ProductName</td>
+                <td>@item.Tbl_Product.Price</td>
+                <td>@item.Quantity</td>
+                <td>@Total</td>
+
+            </tr>
+
+        }
+        <tr>
+            <td colspan="4" class="text-right"><b>Total is :@Totals</b> .Egp</td>
+
+        </tr>
+
+    </tbody>
+</table>
+
+
+<a onclick="window.history.back();" class="btn btn-danger" style="color:white">Back</a>
+<br /><br />
+@using (Html.BeginForm("Order", "Home", new { carts = cartList }, FormMethod.Post))
+{
+    <button type="submit" class="btn btn-success"> Order Now</button>
+}
+
+
+
+
+
+
+
+

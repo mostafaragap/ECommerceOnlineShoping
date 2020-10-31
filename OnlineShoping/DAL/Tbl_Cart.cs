@@ -17,7 +17,9 @@ namespace OnlineShoping.DAL
         public int CartId { get; set; }
         public Nullable<int> ProductId { get; set; }
         public Nullable<int> MemberId { get; set; }
-        public Nullable<int> CartStatusId { get; set; }
+        public Nullable<int> Quantity { get; set; }
+        public Nullable<bool> OrderStatues { get; set; }
+        public Nullable<bool> Confirmed { get; set; }
     
         public virtual Tbl_Product Tbl_Product { get; set; }
     }

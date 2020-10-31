@@ -109,3 +109,5 @@ E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.dll
 E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.Mvc.dll
 E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.xml
 E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PagedList.Mvc.xml
+E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PayPal.dll
+E:\VisualStudio\OnlineShoping\OnlineShoping\bin\PayPal.xml

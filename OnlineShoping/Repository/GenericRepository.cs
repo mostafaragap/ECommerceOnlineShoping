@@ -54,6 +54,27 @@ namespace OnlineShoping.Repository
             return _dbset.Where(wherePredict).FirstOrDefault();
         }
 
+      
+
+        public bool GetInActiveAndDeleted(int id)
+        {
+    
+         var q=  _DBEntity.Tbl_Members.Where(a => (a.IsActive == false || a.IsDelete == true)&&a.MemberId==id);
+            if (q != null)
+            {
+                //user is inactive or deleted
+                return true;
+
+            }
+            else
+                return false;
+        }
+
+        public bool GetInActiveAndDeleted()
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<Tbl_Entity> GetListParameter(Expression<Func<Tbl_Entity, bool>> wherePredict)
         {
             return _dbset.Where(wherePredict).ToList();

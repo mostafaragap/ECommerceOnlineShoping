@@ -12,14 +12,9 @@
           <Property Name="CartId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ProductId" Type="int" />
           <Property Name="MemberId" Type="int" />
-          <Property Name="CartStatusId" Type="int" />
-        </EntityType>
-        <EntityType Name="Tbl_CartStatus">
-          <Key>
-            <PropertyRef Name="CartStatusId" />
-          </Key>
-          <Property Name="CartStatusId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="CartStatus" Type="varchar" MaxLength="500" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="OrderStatues" Type="bit" />
+          <Property Name="Confirmed" Type="bit" />
         </EntityType>
         <EntityType Name="Tbl_Category">
           <Key>
@@ -51,6 +46,7 @@
           <Property Name="IsDelete" Type="bit" />
           <Property Name="CreatedOn" Type="datetime" />
           <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="UserType" Type="int" />
         </EntityType>
         <EntityType Name="Tbl_Product">
           <Key>
@@ -137,7 +133,6 @@
         </Association>
         <EntityContainer Name="dbMyOnlineShoppingModelStoreContainer">
           <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Tbl_CartStatus" EntityType="Self.Tbl_CartStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Tbl_Members" EntityType="Self.Tbl_Members" Schema="dbo" store:Type="Tables" />
@@ -169,15 +164,10 @@
           <Property Name="CartId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProductId" Type="Int32" />
           <Property Name="MemberId" Type="Int32" />
-          <Property Name="CartStatusId" Type="Int32" />
           <NavigationProperty Name="Tbl_Product" Relationship="dbMyOnlineShoppingModel.FK__Tbl_Cart__Produc__38996AB5" FromRole="Tbl_Cart" ToRole="Tbl_Product" />
-        </EntityType>
-        <EntityType Name="Tbl_CartStatus">
-          <Key>
-            <PropertyRef Name="CartStatusId" />
-          </Key>
-          <Property Name="CartStatusId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CartStatus" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="OrderStatues" Type="Boolean" />
+          <Property Name="Confirmed" Type="Boolean" />
         </EntityType>
         <EntityType Name="Tbl_Category">
           <Key>
@@ -211,6 +201,7 @@
           <Property Name="CreatedOn" Type="DateTime" Precision="3" />
           <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
           <NavigationProperty Name="Tbl_ShippingDetails" Relationship="Self.FK__Tbl_Shipp__Membe__3A81B327" FromRole="Tbl_Members" ToRole="Tbl_ShippingDetails" />
+          <Property Name="UserType" Type="Int32" />
         </EntityType>
         <EntityType Name="Tbl_Roles">
           <Key>
@@ -257,7 +248,6 @@
         </Association>
         <EntityContainer Name="dbMyOnlineShoppingEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Tbl_Cart" EntityType="Self.Tbl_Cart" />
-          <EntitySet Name="Tbl_CartStatus" EntityType="Self.Tbl_CartStatus" />
           <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" />
           <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" />
           <EntitySet Name="Tbl_Members" EntityType="Self.Tbl_Members" />
@@ -330,18 +320,12 @@
           <EntitySetMapping Name="Tbl_Cart">
             <EntityTypeMapping TypeName="dbMyOnlineShoppingModel.Tbl_Cart">
               <MappingFragment StoreEntitySet="Tbl_Cart">
+                <ScalarProperty Name="Confirmed" ColumnName="Confirmed" />
+                <ScalarProperty Name="OrderStatues" ColumnName="OrderStatues" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="CartId" ColumnName="CartId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="MemberId" ColumnName="MemberId" />
-                <ScalarProperty Name="CartStatusId" ColumnName="CartStatusId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tbl_CartStatus">
-            <EntityTypeMapping TypeName="dbMyOnlineShoppingModel.Tbl_CartStatus">
-              <MappingFragment StoreEntitySet="Tbl_CartStatus">
-                <ScalarProperty Name="CartStatusId" ColumnName="CartStatusId" />
-                <ScalarProperty Name="CartStatus" ColumnName="CartStatus" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -367,6 +351,7 @@
           <EntitySetMapping Name="Tbl_Members">
             <EntityTypeMapping TypeName="dbMyOnlineShoppingModel.Tbl_Members">
               <MappingFragment StoreEntitySet="Tbl_Members">
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
                 <ScalarProperty Name="MemberId" ColumnName="MemberId" />
                 <ScalarProperty Name="FristName" ColumnName="FristName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
