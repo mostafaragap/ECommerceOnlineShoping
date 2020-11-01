@@ -50,16 +50,18 @@
                 @{
                     if (Session["UserId"] != null)
                     {
-
+                         dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
+                                        var id = (int)Session["UserId"];
+                                        var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues==false).ToList();
                         <ul class="nav navbar-nav navbar-right">
 
                             <li class="dropdown">
-                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">Cart(3) <b class="caret"></b></a>
+                                <a data-toggle="dropdown" class="dropdown-toggle" href="#">Cart(@carts.Count()) <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     @{
-                                        dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
-                                        var id = (int)Session["UserId"];
-                                        var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues==false).ToList();
+                                        //dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
+                                        //var id = (int)Session["UserId"];
+                                        //var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues==false).ToList();
                                         if (carts != null)
                                         {
                                             foreach (var item in carts)

@@ -22,6 +22,7 @@ namespace OnlineShoping.Controllers
 
         public ActionResult Index(string search, int? page)
         {
+           
             
             HomeIndexViewModel model = new HomeIndexViewModel();
             return View(model.CreatedModel(search, 4, page));
@@ -47,9 +48,7 @@ namespace OnlineShoping.Controllers
 
                 var cart = _unitOfWork.GetRepositoryInstance<Tbl_Cart>().GetFirstOrDefaultByParameter(a => a.MemberId == UserId && a.ProductId == productId && a.OrderStatues == false && a.Confirmed == false);
 
-
-
-                if (cart == null)
+                if (cart == null || cart.OrderStatues==true)
                 {
                     cart = new Tbl_Cart()
                     {
