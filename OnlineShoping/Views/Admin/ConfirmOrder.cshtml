@@ -1,0 +1,133 @@
+﻿@model IEnumerable<OnlineShoping.DAL.Tbl_Cart>
+@using OnlineShoping.Models;
+
+
+@{
+    ViewBag.Title = "GetOrders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div>
+    @{
+        if (ViewBag.Res != null)
+        {
+            <h3 style="color:red">@ViewBag.Res</h3>
+        }
+
+    }
+</div>
+
+
+
+
+
+
+<div class="container-fluid">
+    <h1 class="mt-4">Categories</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="~/AdminStyle/dist/index.html">Dashboard</a></li>
+        <li class="breadcrumb-item active">Categories</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-body">
+            DataTables is a third party plugin that is used to generate the demo table below. For more information about DataTables, please visit the
+            <a target="_blank" href="https://datatables.net/">official DataTables documentation</a>
+            .
+        </div>
+    </div>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Categories Details
+            <a href="../Admin/UpdateCategory" class="btn btn-info pull-right" style="float:right !important"> <b>+</b>Add New</a>
+
+
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+
+                        <tr>
+                            <th> Order From</th>
+                            <th> Product Name</th>
+                            <th>Product Quantity</th>
+                            <th>Available Quantity</th>
+
+                        </tr>
+                    </thead>
+                    <tfoot>
+
+
+                        <tr>
+                            <th> Order From</th>
+                            <th> Product Name</th>
+                            <th>Product Quantity</th>
+                            <th>Available Quantity</th>
+
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @{
+                            int Totals = 0;
+
+
+                        }
+
+                        @foreach (var item in Model)
+                        {
+
+                            int Total = Convert.ToInt32(item.Quantity * item.Tbl_Product.Price);
+                            Totals = @Totals + Total;
+
+
+                            <tr>
+                                <td> @item.Tbl_Members.EmailId</td>
+                                <td>
+                                    @item.Tbl_Product.ProductName
+                                </td>
+                                <td>
+                                    @item.Quantity
+                                </td>
+                                <td>
+                                    @item.Tbl_Product.Quantity
+                                </td>
+
+                            </tr>
+
+
+
+
+                            <tr>
+                                <td colspan="4" class="text-right"><b>Total is :@Totals</b> .Egp</td>
+
+                            </tr>
+
+                            <tr>
+                            </tr>
+
+
+
+                            Totals = 0;
+
+
+
+                        }
+
+
+                    </tbody>
+                </table>
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-actions no-color">
+                        <input type="submit" value="Confirm" class="btn btn-danger" />
+                       
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

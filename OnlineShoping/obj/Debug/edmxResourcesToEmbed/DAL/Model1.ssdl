@@ -43,6 +43,16 @@
     <Property Name="ModifiedOn" Type="datetime" />
     <Property Name="UserType" Type="int" />
   </EntityType>
+  <EntityType Name="Tbl_Orders">
+    <Key>
+      <PropertyRef Name="OrderId" />
+    </Key>
+    <Property Name="OrderId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="MemberID" Type="int" Nullable="false" />
+    <Property Name="ProductId" Type="int" Nullable="false" />
+    <Property Name="OrderStatues" Type="bit" />
+    <Property Name="Quantity" Type="int" />
+  </EntityType>
   <EntityType Name="Tbl_Product">
     <Key>
       <PropertyRef Name="ProductId" />
@@ -102,6 +112,30 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK__Tbl_Order__Membe__5CD6CB2B">
+    <End Role="Tbl_Members" Type="Self.Tbl_Members" Multiplicity="1" />
+    <End Role="Tbl_Orders" Type="Self.Tbl_Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Members">
+        <PropertyRef Name="MemberId" />
+      </Principal>
+      <Dependent Role="Tbl_Orders">
+        <PropertyRef Name="MemberID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__Tbl_Order__Produ__5EBF139D">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+    <End Role="Tbl_Orders" Type="Self.Tbl_Orders" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductId" />
+      </Principal>
+      <Dependent Role="Tbl_Orders">
+        <PropertyRef Name="ProductId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK__Tbl_Produ__Categ__398D8EEE">
     <End Role="Tbl_Category" Type="Self.Tbl_Category" Multiplicity="0..1" />
     <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="*" />
@@ -131,6 +165,7 @@
     <EntitySet Name="Tbl_Category" EntityType="Self.Tbl_Category" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_MemberRole" EntityType="Self.Tbl_MemberRole" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Members" EntityType="Self.Tbl_Members" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Tbl_Orders" EntityType="Self.Tbl_Orders" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Product" EntityType="Self.Tbl_Product" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_Roles" EntityType="Self.Tbl_Roles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Tbl_ShippingDetails" EntityType="Self.Tbl_ShippingDetails" Schema="dbo" store:Type="Tables" />
@@ -138,6 +173,14 @@
     <AssociationSet Name="FK__Tbl_Cart__Produc__38996AB5" Association="Self.FK__Tbl_Cart__Produc__38996AB5">
       <End Role="Tbl_Product" EntitySet="Tbl_Product" />
       <End Role="Tbl_Cart" EntitySet="Tbl_Cart" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Tbl_Order__Membe__5CD6CB2B" Association="Self.FK__Tbl_Order__Membe__5CD6CB2B">
+      <End Role="Tbl_Members" EntitySet="Tbl_Members" />
+      <End Role="Tbl_Orders" EntitySet="Tbl_Orders" />
+    </AssociationSet>
+    <AssociationSet Name="FK__Tbl_Order__Produ__5EBF139D" Association="Self.FK__Tbl_Order__Produ__5EBF139D">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_Orders" EntitySet="Tbl_Orders" />
     </AssociationSet>
     <AssociationSet Name="FK__Tbl_Produ__Categ__398D8EEE" Association="Self.FK__Tbl_Produ__Categ__398D8EEE">
       <End Role="Tbl_Category" EntitySet="Tbl_Category" />

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Data.Entity;
 
 namespace OnlineShoping.Controllers
 {
@@ -17,7 +18,8 @@ namespace OnlineShoping.Controllers
         dbMyOnlineShoppingEntities ctx = new dbMyOnlineShoppingEntities();
         public GenericUnitofWork _unitOfWork = new GenericUnitofWork();
         private dbMyOnlineShoppingEntities db = new dbMyOnlineShoppingEntities();
-        
+       
+
 
 
         public ActionResult Index(string search, int? page)
@@ -159,8 +161,8 @@ namespace OnlineShoping.Controllers
             if (Session["UserId"] != null)
             {
                 var id = (int)Session["UserId"];
-                dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
-                var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues == false && a.Confirmed == false).ToList();
+            
+                var carts = _unitOfWork.GetRepositoryInstance<Tbl_Cart>().GetListParameter(a => a.MemberId == id && a.OrderStatues == false && a.Confirmed == false);
                 if (carts != null)
                 {
                     return View(carts);
@@ -182,12 +184,15 @@ namespace OnlineShoping.Controllers
             if (Session["UserId"] != null)
             {
                 var id = (int)Session["UserId"];
-                dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
-                var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues == false && a.Confirmed == false).ToList();
+
+                var carts = _unitOfWork.GetRepositoryInstance<Tbl_Cart>().GetListParameter(a => a.MemberId == id && a.OrderStatues == false && a.Confirmed == false);
+
                 if (carts != null)
                 {
-                
+                  
+                    Session["Orders"] = carts;
                     return View(carts);
+                   
                   
                 }
                 else
@@ -233,11 +238,11 @@ namespace OnlineShoping.Controllers
             if (Session["UserId"] != null)
             {
                 var id = (int)Session["UserId"];
-                dbMyOnlineShoppingEntities _db = new dbMyOnlineShoppingEntities();
-                var carts = _db.Tbl_Cart.Where(a => a.MemberId == id && a.OrderStatues == true && a.Confirmed == false).ToList();
+                
+                var carts = db.Tbl_Orders.Where(a => a.MemberID == id && a.OrderStatues==false ).ToList();
                 if (carts != null)
                 {
-                    Session["Carts"] = carts;
+                    
                     return View(carts);
 
                 }
@@ -252,24 +257,53 @@ namespace OnlineShoping.Controllers
             }
         }
 
+        /// <summary>
+       
+        /// </summary>
+        /// <returns></returns>
+        //ERRRRRRRRRRRRRRRRRRRRRRRRRRRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
 
-        [HttpPost]
-        public ActionResult Order (List<Tbl_Cart> carts)
+        public ActionResult Order()
         {
-            if(carts !=null)
+            if (Session["Orders"] != null)
             {
-                foreach(var item in carts)
+                List<Tbl_Cart> CartList = new List<Tbl_Cart>();
+              
+
+               Tbl_Orders order ;
+                    foreach (var item in (List<Tbl_Cart>)Session["Orders"])
+                    {
+                    order = new Tbl_Orders()
+                    {
+                        MemberID = (int)item.MemberId,
+                        OrderStatues = false ,
+                        ProductId= (int)item.ProductId ,
+                        Quantity = (int)item.Quantity
+                    };
+                    CartList.Add(item);
+
+
+                    _unitOfWork.GetRepositoryInstance<Tbl_Orders>().Add(order);
+
+                   
+                }
+
+                    foreach(var cart in CartList)
                 {
-                    item.OrderStatues = true;
-                    _unitOfWork.GetRepositoryInstance<Tbl_Cart>().Update(item);
-                    
+                   
+                var car  =  db.Tbl_Cart.Find(cart.CartId);
+                    car.OrderStatues = true;
+                    db.Entry(car).State = EntityState.Modified;
+                    db.SaveChanges();
 
                 }
-                ViewBag.Orders = "Orders Are Sent To Seller Succesfully";
-                return RedirectToAction("MyOrders");
+                
+                    ViewBag.Orders = "Orders Are Sent To Seller Succesfully";
+                    return RedirectToAction("MyOrders");
 
+                
             }
-          
+
             return RedirectToAction("MyOrders");
         }
 

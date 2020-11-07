@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<OnlineShoping.DAL.Tbl_Cart>
 
+
 @{
     ViewBag.Title = "CheckoutDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -25,8 +26,6 @@
             int Totals = 0;
             List<object> cartList = new List<object>();
 
-
-
         }
         @foreach (var item in Model)
         {
@@ -46,17 +45,20 @@
             <td colspan="4" class="text-right"><b>Total is :@Totals</b> .Egp</td>
 
         </tr>
+        
 
     </tbody>
 </table>
+<a href="@Url.Action("Order", "Home")" class="btn btn-success">
+    Order Now
+</a>
 
+<br />
+<br />
 
 <a onclick="window.history.back();" class="btn btn-danger" style="color:white">Back</a>
-<br /><br />
-@using (Html.BeginForm("Order", "Home", new { carts = cartList }, FormMethod.Post))
-{
-    <button type="submit" class="btn btn-success"> Order Now</button>
-}
+
+
 
 
 

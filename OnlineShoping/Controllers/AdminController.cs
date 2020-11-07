@@ -222,8 +222,123 @@ namespace OnlineShoping.Controllers
 
         }
 
-        
-      
+
+
+
+        public ActionResult GetOrders()
+        {
+
+
+
+            var Jobs = from app in _DBEntity.Tbl_Orders
+                       join job in _DBEntity.Tbl_Members
+                       on app.MemberID equals job.MemberId
+                       where app.OrderStatues == false 
+                       select app;
+
+            var groubed = from j in Jobs
+                          group j by j.Tbl_Members.EmailId
+                          into gr
+                          select new OrderViewMogel
+                          {
+                             
+                              MemberName = gr.Key,
+                              Items = gr
+                             
+                             
+                          };
+
+            if (Jobs.Count() < 1)
+            {
+                ViewBag.Res = "There is no Orders Now";
+            }
+            else
+            {
+                ViewBag.Res = "Orders";
+                return View(groubed.ToList());
+            }
+            return View(groubed.ToList());
+        }
+
+
+
+
+   
+        public ActionResult ConfirmOrder(int carts)
+        {
+            if (carts==0)
+            {
+                return HttpNotFound();
+            }
+            else
+            {
+                var orders = _unitOfWork.GetRepositoryInstance<Tbl_Orders>().GetListParameter(a => a.MemberID == carts);
+                foreach(var item in orders)
+                {
+                    item.OrderStatues = true;
+                    _unitOfWork.GetRepositoryInstance<Tbl_Orders>().Update(item);
+                    var pro = _unitOfWork.GetRepositoryInstance<Tbl_Product>().GetFirstorDefault(item.Tbl_Product.ProductId);
+                    int prevQuty = (int)pro.Quantity; 
+
+                    pro.Quantity = prevQuty - item.Quantity;
+                    _unitOfWork.GetRepositoryInstance<Tbl_Product>().Update(pro);
+
+                }
+                //foreach (var item in carts)
+                //{
+                //    var order = _unitOfWork.GetRepositoryInstance<Tbl_Orders>().GetFirstorDefault(item);
+                //    order.OrderStatues = true;
+                //    _unitOfWork.GetRepositoryInstance<Tbl_Orders>().Update(order);
+
+
+                //}
+                return RedirectToAction("GetOrders");
+            }
+
+        }
+
+
+        public ActionResult ViewOrders(string memberName)
+        {
+
+       var user= _unitOfWork.GetRepositoryInstance<Tbl_Members>().GetFirstOrDefaultByParameter(a => a.EmailId == memberName);
+
+            var orders = _unitOfWork.GetRepositoryInstance<Tbl_Orders>().GetListParameter(a => a.MemberID == user.MemberId); 
+
+
+            return View(orders);
+
+
+
+
+        }
+
+        //[HttpPost, ActionName("ConfirmOrder")]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult ConfirmOrders(List<int> cartsId)
+        //{
+        //    List<Tbl_Cart> carts = new List<Tbl_Cart>();
+        //    if (cartsId != null)
+        //    {
+
+
+        //        foreach (var item in cartsId)
+        //        {
+
+        //            var res=  _DBEntity.Tbl_Cart.Find(item);
+
+        //            carts.Add(res);
+
+        //        }
+
+        //        return RedirectToAction("GetOrders");
+
+        //    }
+
+        //    return RedirectToAction("GetOrders");
+        //}
+
+
 
 
 

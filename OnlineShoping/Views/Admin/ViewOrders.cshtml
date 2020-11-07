@@ -1,0 +1,82 @@
+﻿
+@model IEnumerable<OnlineShoping.DAL.Tbl_Orders>
+@using OnlineShoping.DAL
+
+@{
+    ViewBag.Title = "ViewOrders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Order Details</h2>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Order Quantity</th>
+            <th>Available Quantity</th>
+
+        </tr>
+
+    </thead>
+    <tbody>
+        @{
+            int Totals = 0;
+            List<int> cartList = new List<int>();
+            int userID =0 ;
+
+        }
+        @foreach (var item in Model)
+        {
+
+            int Total = Convert.ToInt32(item.Quantity * item.Tbl_Product.Price);
+            Totals = @Totals + Total;
+            userID = item.MemberID;
+        <tr>
+            <td>@item.Tbl_Product.ProductName</td>
+            <td>@item.Tbl_Product.Price</td>
+            <td>@item.Quantity</td>
+            @if (item.Tbl_Product.Quantity < item.Quantity)
+            {
+                <td style="color:red ;font-weight:bold">@item.Tbl_Product.Quantity</td>
+            }
+            else
+            {
+                <td style="color :green ; font-weight:bold">@item.Tbl_Product.Quantity</td>
+            }
+
+        </tr>
+        
+        }
+       
+        <tr>
+            <td colspan="4" class="text-right"><b>Total is :@Totals</b> .Egp</td>
+        </tr>
+    </tbody>
+</table>
+
+
+@using (Html.BeginForm("ConfirmOrder", "Admin", new { carts = userID }, FormMethod.Post))
+{
+    <button class="btn btn-success" type="submit">Confirm</button>
+}
+
+<br />
+
+
+<a onclick="window.history.back();" class="btn btn-danger" style="color:white">Back</a>
+
+
+
+
+
+
+
+
+
+
+
+
+

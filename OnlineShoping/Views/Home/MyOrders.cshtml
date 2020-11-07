@@ -1,11 +1,11 @@
-﻿@model IEnumerable<OnlineShoping.DAL.Tbl_Cart>
+﻿@model IEnumerable<OnlineShoping.DAL.Tbl_Orders>
 
 @{
     ViewBag.Title = "CheckoutDetails";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>My Orders</h2>
+<h2>My Pendding Orders</h2>
 
 
 <table class="table table-bordered">
@@ -15,9 +15,6 @@
             <th>Price</th>
             <th>Quantity</th>
             <th>Total Net</th>
-            
-
-
         </tr>
 
     </thead>
@@ -34,26 +31,20 @@
 
             Totals = @Totals + Total;
 
-            if (item.OrderStatues == true)
-            ordrerstat++;
+            if (item.OrderStatues == false)
+                ordrerstat++;
 
 
-        <tr>
-            <td>@item.Tbl_Product.ProductName</td>
-            <td>@item.Tbl_Product.Price</td>
-            <td>@item.Quantity</td>
-            <td>@Total</td>
+            <tr>
+                <td>@item.Tbl_Product.ProductName</td>
+                <td>@item.Tbl_Product.Price</td>
+                <td>@item.Quantity</td>
+                <td>@Total</td>
 
-        </tr>
+            </tr>
 
 
         }
-
-
-
-
-
-
 
 
 

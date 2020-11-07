@@ -1,0 +1,134 @@
+﻿
+@model List<OnlineShoping.Models.OrderViewMogel>
+
+@{
+    ViewBag.Title = "GetOrders";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+@{ 
+    if( ViewBag.Res != null)
+    {
+        <div>
+            <h3>@ViewBag.Res</h3>
+        </div>
+    }
+}
+
+@foreach (var gr in Model)
+{
+
+
+    <table class="table table-bordered table-hover">
+      
+     
+        <tr>
+            <td>
+                Order From :
+                @gr.MemberName
+
+            </td>
+
+
+
+            <td colspan="4" class="text-right">
+
+                @using (Html.BeginForm("ViewOrders", "Admin" ,new { gr.MemberName} ,FormMethod.Post))
+                {
+                    <button class="btn btn-success" type="submit">View Details</button>
+                }
+            </td>
+        </tr>
+
+
+    </table>
+
+
+
+               
+                
+
+
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            Product Details
+            <a href="../Admin/UpdateProduct" class="btn btn-info pull-right" style="float:right !important"> <b>+</b>Add New</a>
+
+
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Order From</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>Available Quantity</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <h3>
+                            @gr.JobTitle
+                        </h3>
+                        @foreach (var gr in Model)
+                        {
+
+                            @foreach (var item in gr.Items)
+                            {
+
+                                <tr>
+
+                                    <td>@item.Tbl_Product.ProductName</td>
+                                    <td>@item.Tbl_Product.ProductName</td>
+
+                                    <td>
+                                        @Html.ActionLink("Edit", "ProductEdit", new { Productid = item.ProductId }, new { @class = "btn btn-primary" })
+                                        @Html.ActionLink("Delete", "DeleteProduct", new { Productid = item.ProductId }, new { @class = "btn btn-danger" })
+                                    </td>
+
+                                </tr>
+
+
+                            }
+                        }
+
+
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>*@
