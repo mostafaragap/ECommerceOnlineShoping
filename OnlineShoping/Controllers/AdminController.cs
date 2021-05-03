@@ -303,7 +303,7 @@ namespace OnlineShoping.Controllers
 
        var user= _unitOfWork.GetRepositoryInstance<Tbl_Members>().GetFirstOrDefaultByParameter(a => a.EmailId == memberName);
 
-            var orders = _unitOfWork.GetRepositoryInstance<Tbl_Orders>().GetListParameter(a => a.MemberID == user.MemberId); 
+            var orders = _unitOfWork.GetRepositoryInstance<Tbl_Orders>().GetListParameter(a => a.MemberID == user.MemberId && a.OrderStatues== false); 
 
 
             return View(orders);

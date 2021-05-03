@@ -418,6 +418,7 @@
     <Content Include="Views\Admin\ConfirmOrder.cshtml" />
     <Content Include="Views\Admin\GetOrders.cshtml" />
     <Content Include="Views\Admin\ViewOrders.cshtml" />
+    <Content Include="Views\Home\MyRepositoryOrders.cshtml" />
     <None Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Shared\_LoginInfo.cshtml" />
     <Content Include="Views\Shared\_LoginAdmin.cshtml" />

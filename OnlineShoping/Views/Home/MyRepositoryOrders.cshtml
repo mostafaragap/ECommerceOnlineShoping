@@ -1,0 +1,73 @@
+﻿
+
+@model IEnumerable<OnlineShoping.DAL.Tbl_Orders>
+
+@{
+    ViewBag.Title = "My Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>My Old Orders</h2>
+
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total Net</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @{
+            int Totals = 0;
+            int ordrerstat = 0;
+
+        }
+
+        @foreach (var item in Model)
+        {
+            int Total = Convert.ToInt32(item.Quantity * item.Tbl_Product.Price);
+
+            Totals = @Totals + Total;
+
+            if (item.OrderStatues == false)
+                ordrerstat++;
+
+
+            <tr>
+                <td>@item.Tbl_Product.ProductName</td>
+                <td>@item.Tbl_Product.Price</td>
+                <td>@item.Quantity</td>
+                <td>@Total</td>
+
+            </tr>
+
+
+        }
+
+
+
+        @if (ordrerstat > 1)
+        {
+            <tr>
+                <td colspan="4" class="text-right" style="color:red"><b>Order Statues is : Pendding</b></td>
+            </tr>
+        }
+        
+        
+
+
+        <tr>
+            <td colspan="4" class="text-right"><b>Total is :@Totals</b> .Egp</td>
+        </tr>
+
+    </tbody>
+</table>
+
+<a onclick="window.history.back();" class="btn btn-danger" style="color:white">Back</a>
+
+
+

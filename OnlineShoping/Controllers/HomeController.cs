@@ -257,8 +257,32 @@ namespace OnlineShoping.Controllers
             }
         }
 
+        public ActionResult MyRepositoryOrders()
+        {
+            if (Session["UserId"] != null)
+            {
+                var id = (int)Session["UserId"];
+
+                var carts = db.Tbl_Orders.Where(a => a.MemberID == id && a.OrderStatues == true).ToList();
+                if (carts != null)
+                {
+
+                    return View(carts);
+
+                }
+                else
+                {
+                    return ViewBag.Carts = "No Items Ordered yet !";
+                }
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+        }
+
         /// <summary>
-       
+
         /// </summary>
         /// <returns></returns>
         //ERRRRRRRRRRRRRRRRRRRRRRRRRRRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
